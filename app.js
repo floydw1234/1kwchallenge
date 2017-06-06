@@ -53,7 +53,6 @@ app.post("/postTeams", upload.array(), function(req,res){
   console.log(teamsArray);
 	var model = mongoose.model('teams', teams, 'teams');
   challenges = new Array(teamsArray.length+1).join('0').split('').map(parseFloat);
-  
 	var doc = new model({
           teams: teamsArray,
           challenges_completed: challenges,
@@ -69,10 +68,25 @@ app.post("/postTeams", upload.array(), function(req,res){
 });
 
 app.get("/getLeaderboard", function(req,res){
-
-
+      res.send(fetchLeaderboard);
 });
 
+function fetchLeaderboard(){
+    var model = mongoose.model('teams', teams, 'teams');
+    model.findOne({},{}, { sort: { 'updated_at' : -1 } }, function(err, post) {
+        console.log( post );
+        return post;
+    });
+}
+
+module.exports = app;
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+});
+
+
+
+/*
 app.get("/averages", function(req,res){
 	var array = [];
 	var model = mongoose.model('average2', avgS, 'averages');
@@ -83,6 +97,8 @@ app.get("/averages", function(req,res){
 			res.send(array);
 		});
 });
+
+
 app.get("/idList", function(req,res){
 	var array = [];
 	var model = mongoose.model('average3', idList, 'averages');
@@ -90,6 +106,7 @@ app.get("/idList", function(req,res){
 			res.send(ids[0]);
 		});
 });
+
 app.get("/allValues", function(req,res){
 	var array = [];
 	var model = mongoose.model('id', values, 'ids');
@@ -109,12 +126,4 @@ app.get("/doPython", function(req,res){
 	});
 });
 
-
-
-
- 
-
-module.exports = app;
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-});
+*/
