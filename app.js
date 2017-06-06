@@ -7,12 +7,15 @@ var bodyParser = require('body-parser');
 var request = require("request-promise");
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/west');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('we are connected to mongodb!');
+});
 var Schema = mongoose.Schema;
 var PythonShell = require('python-shell');
 
 
-//var index = require('./routes/index');
-//var users = require('./routes/users');
 var multer = require('multer');
 var upload = multer();
 
@@ -20,26 +23,14 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+ 
 
-//one({"type": "hrlyaverage", "value": numpy.average(hourValues), "timeStamp" : hourLimit})
 
-var avgS = new Schema({
-    type: String,
-    value: Number,
-    timeStamp: Number,
-    id: Schema.Types.Mixed
-});
-var values = new Schema({
-    type: String,
-    value: Number,
-    timeStamp: Number,
-    id: Schema.Types.Mixed
-});
-var idList = new Schema({
-    id: Schema.Types.Mixed
-});
 var teams = new Schema({
-    teams: Schema.Types.Mixed
+    teams: Schema.Types.Mixed,
+    challenges_completed: Schema.Types.Mixed,
+    energy_used: Schema.Types.Mixed,
+    updated_at : Number
 });
 
 
@@ -59,15 +50,27 @@ app.get("/", function(req,res){
 
 app.post("/postTeams", upload.array(), function(req,res){
 	var teamsArray = req.body.teams;
-	var array = [];
+  console.log(teamsArray);
 	var model = mongoose.model('teams', teams, 'teams');
-  model.remove({});
-	var doc = new model({teamsArray});
+  challenges = new Array(teamsArray.length+1).join('0').split('').map(parseFloat);
+  
+	var doc = new model({
+          teams: teamsArray,
+          challenges_completed: challenges,
+          energy_used: challenges,
+          updated_at: parseInt(Math.floor(Date.now() / 1000)) 
+          }
+ );
   doc.save(function(err) {
       if (err) throw err;
       console.log("save successful")
   });
   res.send("success!")
+});
+
+app.get("/getLeaderboard", function(req,res){
+
+
 });
 
 app.get("/averages", function(req,res){
@@ -109,7 +112,7 @@ app.get("/doPython", function(req,res){
 
 
 
-
+ 
 
 module.exports = app;
 app.listen(3000, function () {

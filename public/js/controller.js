@@ -14,6 +14,7 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 				$scope.teams.push($scope.teamName);
 				$scope.error = "";
 				$scope.clearInput();
+
 			}else{
 				$scope.error = "No duplicate or blank names!";
 			}
@@ -35,7 +36,6 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 				$http.post('/postTeams', data)
 				.success(function (data, status, headers, config) {
 								deferred.resolve(data);
-
 					$scope.PostDataResponse = data;
 				})
 					.error(function(data,status,headers,config){

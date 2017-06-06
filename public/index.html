@@ -23,24 +23,29 @@
 
          <h2>1kw Hour Challenge</h2>
          <p>Enter you team names one at a time!</p>
-
+ 
 	<div>
          <input type="text" name="teamName" ng-model="teamName" value="team Name Here"/>
          <p>{{ error }}</p>
 	</div>
 
          <div>
-            <button class="button" ng-click="addToList()"> Add to list </button>
+            <button class="btn" ng-click="addToList()"> Add to list </button>
          </div>
          <hr>
          <div ng-repeat="team in teams">
               <ul>
-                <li>{{ team }}::::<button class="btn-sm" ng-click="deleteTeam( team )">Delete Team </button> </li>
+                <li>{{ team }}<div><button class="btn-sm" ng-click="deleteTeam( team )">Delete Team </button> </div></li>
               </ul>
          </div>
          <hr>
          <form action="/leaderboard.html">
-                <input type="submit" value="Go to leaderboard" ng-click="postTeams()" />
+                <input class="btn" type="submit" value="Finalize Teams and Go to leaderboard!" ng-click="postTeams()" />
+        </form>
+        <hr>
+        
+        <form action="/leaderboard.html">
+                <input class="btn" type="submit" value="Go to most recent leaderboard"/>
         </form>
 
       </div>
