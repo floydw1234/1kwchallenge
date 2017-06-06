@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+      <!-- Include Date Range Picker -->
+
+      <title> 1Kw Challenge </title>
+   </head>
+	<style>
+
+	</style>
+   <script type="text/javascript"src="js/controller.js"></script>
+   <body ng-app="myApp" class="container">
+      <div  ng-controller="mainController">
+
+         <h2>1kw Hour Challenge</h2>
+         <p>Enter you team names one at a time!</p>
+
+	<div>
+         <input type="text" name="teamName" ng-model="teamName" value="team Name Here"/>
+         <p>{{ error }}</p>
+	</div>
+
+         <div>
+            <button class="button" ng-click="addToList()"> Add to list </button>
+         </div>
+         <hr>
+         <div ng-repeat="team in teams">
+              <ul>
+                <li>{{ team }}::::<button class="btn-sm" ng-click="deleteTeam( team )">Delete Team </button> </li>
+              </ul>
+         </div>
+         <hr>
+         <form action="/leaderboard.html">
+                <input type="submit" value="Go to leaderboard" ng-click="postTeams()" />
+        </form>
+
+      </div>
+   </body>
+</html>
+
+<!--
+<div class="dropdown">
+   <button class="button dropdown-toggle" type="button" data-toggle="dropdown" ng-click="getIds()"> Sensor Select: {{ currentId }}
+   <span class="caret"></span></button>
+   <ul class="dropdown-menu">
+      <li><a ng-repeat="id in idList" ng-click="selectId(id)">{{ id }}</a></li>
+   </ul>
+</div>
+-->
