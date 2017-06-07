@@ -1,13 +1,13 @@
 var app = angular.module('myApp',[]);
 
-app.controller('mainController', ['$scope','$http','$interval','$q', function($scope, $http,$q,$interval){
+app.controller('mainController', ['$scope','$http','$interval', function($scope, $http, $interval){
 
-	$scope.test = 0;
+	$scope.challengeNumber = 0;
 	$scope.test2 = [];
 	$scope.teamName = '';
 	$scope.teams = [];
 	$scope.error = "";
-  $scope.leaderBoard = {};
+  $scope.leaderBoard = "";
 
 	$scope.addToList = function(){
 			var index = $scope.teams.indexOf($scope.teamName);
@@ -43,22 +43,25 @@ app.controller('mainController', ['$scope','$http','$interval','$q', function($s
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
 	}
- /*
+ 
   $scope.updateLeaderBoard = function(){
-    $interval(function(){
         $http.get('/getLeaderboard')
 				.success(function (data) {
           console.log(data);
+          if(data.length != 0 && data[0].challengeNumber == $scope.challengeNumber){
 					$scope.leaderBoard = data;
+          }
+          $scope.challengeNumber =  data[0].challengeNumber;
 				})
 					.error(function(data,status,headers,config){
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
-    },2000);
   }
-  $scope.updateLeaderBoard();
-  */
-
+  $scope.challengeNumber = $scope.updateLearderBoard;
+  $interval(function(){
+      $scope.updateLeaderBoard();
+  },2000);
+ 
 
 }]);
 

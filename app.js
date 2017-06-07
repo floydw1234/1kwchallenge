@@ -31,7 +31,8 @@ var team = new Schema({
     challenges_completed: Number,
     energy_used: Number,
     challengeNumber: Number,
-    updated_at : Number
+    updated_at : Number,
+    score: Number
 });
 
 
@@ -65,7 +66,8 @@ app.post("/postTeams", upload.array(), function(req,res){
           challenges_completed: 0,
           energy_used: 0,
           challengeNumber: challengeNumber,
-          updated_at: parseInt(Math.floor(Date.now() / 1000)) 
+          updated_at: parseInt(Math.floor(Date.now() / 1000)) ,
+          score: 0
           }
        );
        doc.save(function(err) {
@@ -73,29 +75,31 @@ app.post("/postTeams", upload.array(), function(req,res){
           //console.log("save successful"); 
        });
   });
-
-  });
+});
 
 	
 });
 
 app.get("/getLeaderboard", function(req,res){
-      res.send(fetchLeaderboard);
+      var challengeNumber=0;
+      var array = [];
+      var model = mongoose.model('teams', team, 'teams');
+    model.findOne({},{}, { sort: { 'challengeNumber' : -1 } }, function(err, post) {
+        challengeNumber = post.challengeNumber;
+        console.log(challengeNumber);
+    }).then(function(){
+      model.find({'challengeNumber' : challengeNumber },{},{sort:{ 'score': -1 }}, function(err, values) {
+        values.forEach(function(thing){
+				array.push(thing);
+        });
+      }).then(function(){
+         console.log(array);
+         res.send(array);
+    });
+     });
 });
 
-function fetchLeaderboard(){
-    var model = mongoose.model('teams', team, 'teams');
-    model.findOne({},{}, { sort: { 'updated_at' : -1 } }, function(err, post) {
-        console.log( post );
-        return post;
-    });
-}
-function getNextChallengeNumber(){
-    
-}
-setInterval(function(){
-    challengeNumber = getNextChallengeNumber();
-},10000);
+
 
 module.exports = app;
 app.listen(3000, function () {

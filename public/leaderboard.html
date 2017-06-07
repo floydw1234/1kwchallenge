@@ -25,36 +25,25 @@
          <h2>1kw Hour Challenge</h2>
          <h3>LeaderBoards!</h3>
          <hr>
-         <p>  {{ leaderBoard }} </p>
+         <p>{{test}}</p>
+
          
          
          <table class="table table-striped">
   <thead>
     <tr>
       <th>#</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Username</th>
+      <th>Team Name</th>
+      <th>Challenges Completed</th>
+      <th>Energy Used</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody ng-repeat="team in leaderBoard">
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
+      <th scope="row"> {{ leaderBoard.indexOf(team) + 1 }}</th>
+      <td>{{ team.teamName }}</td>
+      <td>{{ team.challenges_completed }}</td>
+      <td>{{ team.energy_used }}</td>
     </tr>
   </tbody>
 </table>
