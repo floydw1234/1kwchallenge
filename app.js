@@ -14,7 +14,7 @@ db.once('open', function() {
 });
 var Schema = mongoose.Schema;
 var PythonShell = require('python-shell');
-
+ 
 
 var multer = require('multer');
 var upload = multer();
@@ -26,10 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
  
 
 
-var teams = new Schema({
-    teams: Schema.Types.Mixed,
-    challenges_completed: Schema.Types.Mixed,
-    energy_used: Schema.Types.Mixed,
+var team = new Schema({
+    teamName: String,
+    challenges_completed: Number,
+    energy_used: Number,
+    challengeNumber: Number,
     updated_at : Number
 });
 
@@ -50,21 +51,32 @@ app.get("/", function(req,res){
 
 app.post("/postTeams", upload.array(), function(req,res){
 	var teamsArray = req.body.teams;
-  console.log(teamsArray);
-	var model = mongoose.model('teams', teams, 'teams');
-  challenges = new Array(teamsArray.length+1).join('0').split('').map(parseFloat);
-	var doc = new model({
-          teams: teamsArray,
-          challenges_completed: challenges,
-          energy_used: challenges,
+  var challengeNumber = 0;
+	var model = mongoose.model('team', team, 'teams');
+    model.findOne({},{}, { sort: { 'challengeNumber' : -1 } }, function(err, post) {
+        if(post != null && post.challengeNumber != null)
+        challengeNumber = post.challengeNumber + 1;
+        else
+          challengeNumber = 1;
+    }).then(function(){
+  teamsArray.forEach(function(teamName){
+      var doc = new model({
+          teamName: teamName,
+          challenges_completed: 0,
+          energy_used: 0,
+          challengeNumber: challengeNumber,
           updated_at: parseInt(Math.floor(Date.now() / 1000)) 
           }
- );
-  doc.save(function(err) {
-      if (err) throw err;
-      console.log("save successful")
+       );
+       doc.save(function(err) {
+          if (err) throw err;
+          //console.log("save successful"); 
+       });
   });
-  res.send("success!")
+
+  });
+
+	
 });
 
 app.get("/getLeaderboard", function(req,res){
@@ -72,16 +84,22 @@ app.get("/getLeaderboard", function(req,res){
 });
 
 function fetchLeaderboard(){
-    var model = mongoose.model('teams', teams, 'teams');
+    var model = mongoose.model('teams', team, 'teams');
     model.findOne({},{}, { sort: { 'updated_at' : -1 } }, function(err, post) {
         console.log( post );
         return post;
     });
 }
+function getNextChallengeNumber(){
+    
+}
+setInterval(function(){
+    challengeNumber = getNextChallengeNumber();
+},10000);
 
 module.exports = app;
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port 3000!');
 });
 
 
