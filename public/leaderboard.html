@@ -17,14 +17,53 @@
 	<style>
 
 	</style>
-   <script type="text/javascript"src="js/controller.js"></script>
+   <script type="text/javascript"src="js/controller2.js"></script>
+
    <body ng-app="myApp" class="container">
       <div  ng-controller="mainController">
-
+          
          <h2>1kw Hour Challenge</h2>
          <h3>LeaderBoards!</h3>
          <hr>
-         <p> {{ teams }}</p>
+         <p>  {{ leaderBoard }} </p>
+         
+         
+         <table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Username</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Larry</td>
+      <td>the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+</table>
+         
+         
+         
+         
+         
+         
          <ol>
             <li ng-repeat="team in teams">{{ team }}</li>
          </ol>

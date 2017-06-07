@@ -1,6 +1,6 @@
 var app = angular.module('myApp',[]);
 
-app.controller('mainController', ['$scope','$http','$q', function($scope, $http,$q){
+app.controller('mainController', ['$scope','$http','$interval','$q', function($scope, $http,$q,$interval){
 
 	$scope.test = 0;
 	$scope.test2 = [];
@@ -15,6 +15,7 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 				$scope.teams.push($scope.teamName);
 				$scope.error = "";
 				$scope.clearInput();
+
 			}else{
 				$scope.error = "No duplicate or blank names!";
 			}
@@ -23,6 +24,7 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 	}
 	$scope.clearInput = function(){
 		$scope.teamName = "";
+
 	}
 
 	$scope.deleteTeam = function(team){
@@ -41,6 +43,7 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
 	}
+ /*
   $scope.updateLeaderBoard = function(){
     $interval(function(){
         $http.get('/getLeaderboard')
@@ -53,6 +56,8 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 				});
     },2000);
   }
+  $scope.updateLeaderBoard();
+  */
 
 
 }]);
@@ -119,3 +124,4 @@ app.controller('mainController', ['$scope','$http','$q', function($scope, $http,
 			$scope.currentId = id;
 		}
 		*/
+
