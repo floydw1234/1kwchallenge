@@ -86,14 +86,14 @@ app.get("/getLeaderboard", function(req,res){
       var model = mongoose.model('teams', team, 'teams');
     model.findOne({},{}, { sort: { 'challengeNumber' : -1 } }, function(err, post) {
         challengeNumber = post.challengeNumber;
-        console.log(challengeNumber);
+    
     }).then(function(){
       model.find({'challengeNumber' : challengeNumber },{},{sort:{ 'score': -1 }}, function(err, values) {
         values.forEach(function(thing){
 				array.push(thing);
         });
       }).then(function(){
-         console.log(array);
+        
          res.send(array);
     });
      });
