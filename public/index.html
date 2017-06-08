@@ -9,12 +9,16 @@
       <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
       <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+      <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
       <!-- Include Date Range Picker -->
 <body background="/images/LB.jpg">
       <title> 1Kw Challenge </title>
    </head>
 	<style>
+ li{
+   font-size: 200%;
+ }
 
 	</style>
    <script type="text/javascript"src="js/controller.js"></script>
@@ -35,7 +39,7 @@
          <hr>
          <div ng-repeat="team in teams">
               <ul>
-                <li>{{ team }}<div><button class="btn-sm" ng-click="deleteTeam( team )">Delete Team </button> </div></li>
+                <li> <b>{{ team }} <b><div><button class="btn-sm" ng-click="deleteTeam( team )">Delete Team </button> </div></li>
               </ul>
          </div>
          <hr>

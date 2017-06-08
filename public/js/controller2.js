@@ -57,12 +57,10 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
   }
-  $scope.challengeNumber = $scope.updateLearderBoard;
+  $scope.updateLeaderBoard();
   $interval(function(){
       $scope.updateLeaderBoard();
   },2000);
- 
-
 }]);
 
 
