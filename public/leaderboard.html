@@ -41,7 +41,7 @@
   <tbody ng-repeat="team in leaderBoard">
     <tr>
       <th scope="row"> {{ leaderBoard.indexOf(team) + 1 }}</th>
-      <td > <a href="/teams/{{team.teamName}}" replace-link> {{ team.teamName }}</td>
+      <td ><a ng-click="generateGraph(team)"> {{ team.teamName }}</a></td>
       <td>{{ team.challenges_completed }}</td>
       <td>{{ team.energy_used }}</td>
     </tr>
@@ -53,6 +53,26 @@
          </ol>
 
 
+      
+      <center>
+      <h2 style="color: white"><b>{{ currentTeam.teamName }}</b></h2>
+      </center>
+       <div class="dropdown">
+            <button class="button dropdown-toggle" type="button" data-toggle="dropdown"> Challenge Select: {{ currentChallenge }}
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+               <li><a ng-repeat="challenge in challenges" ng-click="selectChallenge(challenge)">{{ challenge }}</a></li>
+            </ul>
+            
+            
+            <!-- 
+            
+            
+            graph and timer go here as well as a submit button for finalizing your score and updating the leaderboard
+            
+            
+            -->
+         </div>
       </div>
    </body>
 </html>

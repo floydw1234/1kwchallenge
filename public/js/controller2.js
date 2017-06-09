@@ -8,6 +8,12 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 	$scope.teams = [];
 	$scope.error = "";
   $scope.leaderBoard = "";
+  $scope.currentTeam = {teamName: "Please click on your team name on the leaderboard to Select Team!"};
+  $scope.currentChallenge = "Air Pong";
+  $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
+  $scope.startTime = 0;
+  $scope.endTime = 0;
+  
 
 	$scope.addToList = function(){
 			var index = $scope.teams.indexOf($scope.teamName);
@@ -26,6 +32,9 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 		$scope.teamName = "";
 
 	}
+  $scope.generateGraph = function(team){
+      $scope.currentTeam = team;
+  }
 
 	$scope.deleteTeam = function(team){
 				var index = $scope.teams.indexOf(team);
@@ -44,7 +53,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 				});
 	}
  
-  $scope.updateLeaderBoard = function(){
+  $scope.refreshLeaderBoard = function(){
         $http.get('/getLeaderboard')
 				.success(function (data) {
           console.log(data);
@@ -57,10 +66,20 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
   }
-  $scope.updateLeaderBoard();
+  $scope.refreshLeaderBoard();
   $interval(function(){
-      $scope.updateLeaderBoard();
+      $scope.refreshLeaderBoard();
   },2000);
+  
+  $scope.selectChallenge = function(challenge){
+    $scope.currentChallenge = challenge;
+}
+  $scope.logScore = function(){
+  
+  
+  }
+  
+
 }]);
 
 
