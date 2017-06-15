@@ -40,7 +40,7 @@
   </thead>
   <tbody ng-repeat="team in leaderBoard | orderBy : '-score'">
     <tr>
-      <th scope="row"> {{ leaderBoard.indexOf(team) + 1 }}</th>
+      <th scope="row"> {{ $index + 1 }}</th>
       <td ><a ng-click="generateGraph(team)"> {{ team.teamName }}</a></td>
       <td>{{ team.challenges_completed }}</td>
       <td>{{ team.energy_used }}</td>
@@ -75,7 +75,7 @@
             
             -->
             <div>
-                <button class="btn" ng-click="updateLeaderboard()"><a href="http://cpmqtt1.calit2.uci.edu:3000/leaderboard.html?">update Leaderboard</a></button>
+                <button class="btn" ng-click="updateLeaderboard()">update Leaderboard</button>
             </div>
          </div>
       </div>
@@ -83,6 +83,9 @@
 </html>
 
 <!--
+<a href="http://cpmqtt1.calit2.uci.edu:3000/leaderboard.html?">update Leaderboard</a>
+
+
 <div class="dropdown">
    <button class="button dropdown-toggle" type="button" data-toggle="dropdown" ng-click="getIds()"> Sensor Select: {{ currentId }}
    <span class="caret"></span></button>

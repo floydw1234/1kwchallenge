@@ -12,7 +12,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
   $scope.currentChallenge = "Air Pong";
   $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
   $scope.startTime = 0;
-  $scope.endTime = 0;
+  $scope.endTime = 1;
   
 
 	$scope.addToList = function(){
@@ -53,7 +53,8 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 				});
 	}
   $scope.updateLeaderboard = function(){
-      $scope.currentTeam.challenges_completed = 99;
+      $scope.currentTeam.score += $scope.endTime;
+      $scope.endTime += $scope.endTime;
       $scope.leaderBoard.sort(function(a, b) {
             return parseFloat(a.score) - parseFloat(b.score);
       });
