@@ -50,6 +50,10 @@ app.get("/", function(req,res){
 	res.sendfile('public/index.html');
 });
 
+app.get("/team", function(req, res){
+	res.sendfile('public/team.html');
+});
+
 app.post("/postTeams", upload.array(), function(req,res){
 	var teamsArray = req.body.teams;
   var challengeNumber = 0;
