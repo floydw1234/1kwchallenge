@@ -94,6 +94,7 @@ app.get("/getLeaderboard", function(req,res){
       var array = [];
       var model = mongoose.model('teams', team, 'teams');
     model.findOne({},{}, { sort: { 'challengeNumber' : -1 } }, function(err, post) {
+        if(post != null)
         challengeNumber = post.challengeNumber;
     
     }).then(function(){
@@ -151,6 +152,7 @@ app.post("/updateLeaderboard",function(req,res){
       
             result.challenges_completed = req.body.challenges_completed;
             result.energy_used = req.body.energy_used;
+            result.score = req.body.score;
             result.updated_at = parseInt(Math.floor(Date.now() / 1000));
             result.save(function (err, update) {
                 if (err) return handleError(err);

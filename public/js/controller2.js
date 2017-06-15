@@ -53,6 +53,10 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 				});
 	}
   $scope.updateLeaderboard = function(){
+      $scope.currentTeam.challenges_completed = 99;
+      $scope.leaderBoard.sort(function(a, b) {
+            return parseFloat(a.score) - parseFloat(b.score);
+      });
       if($scope.currentTeam != ""){
           $scope.error = "";
           var data = $scope.currentTeam;
@@ -84,7 +88,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
   $scope.refreshLeaderBoard();
 $interval(function(){
       $scope.refreshLeaderBoard();
-  },50,2);
+  },50,5);
   
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
