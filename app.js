@@ -1,3 +1,4 @@
+var JSON = require('JSON');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -34,6 +35,14 @@ var team = new Schema({
     updated_at : Number,
     score: Number
 });
+
+var data = new Schema({
+    sensorId : Number, 
+    value : Number, 
+    timePolled : Number, 
+    last_seen : Number 
+});
+    
 
 
 
@@ -89,6 +98,7 @@ app.get("/getLeaderboard", function(req,res){
       var array = [];
       var model = mongoose.model('teams', team, 'teams');
     model.findOne({},{}, { sort: { 'challengeNumber' : -1 } }, function(err, post) {
+        if(post != null)
         challengeNumber = post.challengeNumber;
     
     }).then(function(){
@@ -102,6 +112,61 @@ app.get("/getLeaderboard", function(req,res){
     });
      });
 });
+
+app.get("/mostRecentValue/:challenge",function(req,res){
+    var challenge = req.params.challenge;
+    var sensor = "";
+    /*
+    movie Station sensorId: 23231
+    game station #2 - sensorId: 52415
+    game station #1 - sensorId: 11229
+    blower - sensorId: 29574
+    */
+    switch(challenge) {
+    case "riverRush":
+        sensor = 11229;
+        break;
+    case "obstacleCourse":
+        sensor = 52415;  
+        break;
+    case "blower":
+        sensor = 29574;
+        break;
+    case "movieStation":
+        sensor = 23231;
+        break;
+    default:
+        console.log("Please use a valid http request from the front end");
+        res.send("Incorect challenge specified");
+        return;
+        sensor = "23231";
+    }
+    var model = mongoose.model('data', data, 'ids');
+    model.findOne({'sensorId': sensor},{}, { sort: { 'timePolled' : -1 } }, function(err, post) {
+        if(err) throw err;
+        res.send(post);
+    });
+});
+
+app.post("/updateLeaderboard",function(req,res){
+        //console.log(req.body);
+        var model = mongoose.model('team', team, 'teams');
+        model.findById(req.body._id, function (err, result) {
+            if (err) return handleError(err);
+      
+            result.challenges_completed = req.body.challenges_completed;
+            result.energy_used = req.body.energy_used;
+            result.score = req.body.score;
+            result.updated_at = parseInt(Math.floor(Date.now() / 1000));
+            result.save(function (err, update) {
+                if (err) return handleError(err);
+                res.send(update);
+            });
+        });
+
+});
+
+
 
 
 

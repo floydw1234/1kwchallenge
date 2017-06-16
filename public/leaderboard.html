@@ -38,9 +38,9 @@
       <th>Energy Used</th>
     </tr>
   </thead>
-  <tbody ng-repeat="team in leaderBoard">
+  <tbody ng-repeat="team in leaderBoard | orderBy : '-score'">
     <tr>
-      <th scope="row"> {{ leaderBoard.indexOf(team) + 1 }}</th>
+      <th scope="row"> {{ $index + 1 }}</th>
       <td ><a ng-click="generateGraph(team)"> {{ team.teamName }}</a></td>
       <td>{{ team.challenges_completed }}</td>
       <td>{{ team.energy_used }}</td>
@@ -56,6 +56,8 @@
       
       <center>
       <h2 style="color: white"><b>{{ currentTeam.teamName }}</b></h2>
+      <h2 style="color: white"><b>{{ PostDataResponse }}</b></h2>
+      <h2 style="color: white"><b>{{ leaderBoard }}</b></h2>
       </center>
        <div class="dropdown">
             <button class="button dropdown-toggle" type="button" data-toggle="dropdown"> Challenge Select: {{ currentChallenge }}
@@ -72,12 +74,18 @@
             
             
             -->
+            <div>
+                <button class="btn" ng-click="updateLeaderboard()">update Leaderboard</button>
+            </div>
          </div>
       </div>
    </body>
 </html>
 
 <!--
+<a href="http://cpmqtt1.calit2.uci.edu:3000/leaderboard.html?">update Leaderboard</a>
+
+
 <div class="dropdown">
    <button class="button dropdown-toggle" type="button" data-toggle="dropdown" ng-click="getIds()"> Sensor Select: {{ currentId }}
    <span class="caret"></span></button>

@@ -8,11 +8,11 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 	$scope.teams = [];
 	$scope.error = "";
   $scope.leaderBoard = "";
-  $scope.currentTeam = {teamName: "Please click on your team name on the leaderboard to Select Team!"};
+  $scope.currentTeam = "";
   $scope.currentChallenge = "Air Pong";
   $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
   $scope.startTime = 0;
-  $scope.endTime = 0;
+  $scope.endTime = 1;
   
 
 	$scope.addToList = function(){
@@ -52,6 +52,26 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
 	}
+  $scope.updateLeaderboard = function(){
+      $scope.currentTeam.score += $scope.endTime;
+      $scope.endTime += $scope.endTime;
+      $scope.leaderBoard.sort(function(a, b) {
+            return parseFloat(a.score) - parseFloat(b.score);
+      });
+      if($scope.currentTeam != ""){
+          $scope.error = "";
+          var data = $scope.currentTeam;
+    				$http.post('/updateLeaderboard', data)
+    				.success(function (data, status, headers, config) {
+    					$scope.PostDataResponse = data;
+    				})
+    					.error(function(data,status,headers,config){
+    					$scope.ResponseDetails = JSON.stringify({data: data});
+    				});
+      }else{
+      $scope.error = "please pick team to update"}
+  
+  }
  
   $scope.refreshLeaderBoard = function(){
         $http.get('/getLeaderboard')
@@ -67,9 +87,9 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 				});
   }
   $scope.refreshLeaderBoard();
-  $interval(function(){
+$interval(function(){
       $scope.refreshLeaderBoard();
-  },2000);
+  },50,5);
   
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
