@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  
+
   <head lang="en">
     <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,17 +15,17 @@
       <link rel="icon" type="image/x-icon" href="images/favicon.ico"/>
 
       <script src="http://d3js.org/d3.v2.js"></script>
-    <!-- 
+    <!--
       using JQuery for element dimensions
       This is a small aspect of this example so it can be removed fairly easily if needed.
     -->
-   
+
       <!--<link rel="stylesheet" href="style.css">-->
       <title> 1Kw Challenge </title>
   </head>
 <style>
 * {margin: 0; padding: 0;}
-  
+
  .container {
   padding: 10px;
   text-align: center;
@@ -39,9 +39,9 @@
   border: 7px solid #efefef;
   border-radius: 5px;
   position: relative;
-  
-  box-shadow: 
-    inset 0 -2px 10px 1px rgba(0, 0, 0, 0.75), 
+
+  box-shadow:
+    inset 0 -2px 10px 1px rgba(0, 0, 0, 0.75),
     0 5px 20px -10px rgba(0, 0, 0, 1);
 }
 
@@ -62,11 +62,11 @@
   font-family: digital, arial, verdana;
   text-align: center;
   color: #fff;
-  
+
   position: absolute;
   top: 0;
   left: 0;
-  
+
   /*Glow to the text*/
   text-shadow: 0 0 5px rgba(255, 255, 255, 1);
 }
@@ -92,7 +92,7 @@ input[name="controls"] {display: none;}
 
 .moveten {
   /*The digits move but dont look good. We will use steps now
-  10 digits = 10 steps. You can now see the digits swapping instead of 
+  10 digits = 10 steps. You can now see the digits swapping instead of
   moving pixel-by-pixel*/
   animation: moveten 1s steps(10, end) infinite;
   /*By default animation should be paused*/
@@ -120,13 +120,13 @@ input[name="controls"] {display: none;}
 
 @keyframes moveten {
   0% {top: 0;}
-  100% {top: -400px;} 
+  100% {top: -400px;}
   /*height = 40. digits = 10. hence -400 to move it completely to the top*/
 }
 
 @keyframes movesix {
   0% {top: 0;}
-  100% {top: -240px;} 
+  100% {top: -240px;}
   /*height = 40. digits = 6. hence -240 to move it completely to the top*/
 }
 
@@ -135,7 +135,7 @@ path {
         stroke-width: 1;
         fill: none;
       }
-      
+
       .axis {
         shape-rendering: crispEdges;
       }
@@ -164,7 +164,7 @@ path {
 </head>
 <script src="js/timer.js"></script>
 
-<body ng-app="stopwatchApp" ng-controller="stopwatchController">
+<body ng-app="myApp" ng-controller="stopwatchController">
   <div class="container">
     <!-- time to add the controls -->
 
@@ -217,12 +217,12 @@ path {
 
   <script>
     /* implementation heavily influenced by http://bl.ocks.org/1166403 */
-    
+
     // define dimensions of graph
     var m = [80, 80, 80, 80]; // margins
     var w = 1000 - m[1] - m[3]; // width
     var h = 400 - m[0] - m[2]; // height
-    
+
     // create a simple data array that we'll plot with a line (this array represents only the Y values, X will just be the index location)
     var data = [0];
 
@@ -236,17 +236,17 @@ path {
     // create a line function that can convert data[] into x and y points
     var line = d3.svg.line()
       // assign the X function to plot our line as we wish
-      .x(function(d,i) { 
+      .x(function(d,i) {
         // verbose logging to show what's actually being done
         console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
         // return the X coordinate where we want to plot this datapoint
-        return x(i); 
+        return x(i);
       })
-      .y(function(d) { 
+      .y(function(d) {
         // verbose logging to show what's actually being done
         console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
         // return the Y coordinate where we want to plot this datapoint
-        return y(d); 
+        return y(d);
       })
 
       // Add an SVG element with the desired dimensions and margin.
@@ -272,11 +272,11 @@ path {
             .attr("class", "y axis")
             .attr("transform", "translate(-25,0)")
             .call(yAxisLeft);
-      
+
         // Add the line by appending an svg:path element with the data line we created above
       // do this AFTER the axes above so that the line is above the tick-lines
         graph.append("svg:path").attr("d", line(data));
-      
+
   var totalenergy = 0;
   setInterval(function() {
     var running = $('[ng-controller="stopwatchController"]').scope().running;
@@ -287,7 +287,7 @@ path {
       data.push(totalenergy);
 
       // create left yAxis
-      
+
       graph.append("svg:path").attr("d", line(data));
     }
   }, 1000);

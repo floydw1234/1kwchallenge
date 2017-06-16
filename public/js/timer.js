@@ -1,4 +1,4 @@
-var app = angular.module('stopwatchApp',[]);
+//var app = angular.module('myApp',[]);
 
 app.controller('stopwatchController', ['$scope','$http', '$timeout', function($scope, $http, $timeout){
   var timeoutId;
@@ -10,17 +10,17 @@ app.controller('stopwatchController', ['$scope','$http', '$timeout', function($s
     $timeout.cancel(timeoutId);
     $scope.running = false;
   };
-  
+
   $scope.start = function() {
     timer();
     $scope.running = true;
   };
-  
+
   $scope.clear = function() {
     $scope.seconds = 0;
     $scope.minutes = 0;
   };
-  
+
   function timer() {
     timeoutId = $timeout(function() {
       console.log($scope.seconds);
@@ -28,7 +28,7 @@ app.controller('stopwatchController', ['$scope','$http', '$timeout', function($s
       timer();
     }, 1000);
   }
-  
+
   function updateTime() {
     $scope.seconds++;
     if ($scope.seconds === 60) {
@@ -113,22 +113,22 @@ angular.module('stopwatch', []).
         $scope.seconds = 0;
         $scope.minutes = 0;
         $scope.running = false;
- 
+
         $scope.stop = function() {
           $timeout.cancel(timeoutId);
           $scope.running = false;
         };
-        
+
         $scope.start = function() {
           timer();
           $scope.running = true;
         };
-        
+
         $scope.clear = function() {
           $scope.seconds = 0;
           $scope.minutes = 0;
         };
-        
+
         function timer() {
           timeoutId = $timeout(function() {
             console.log($scope.seconds);
@@ -136,7 +136,7 @@ angular.module('stopwatch', []).
             timer();
           }, 1000);
         }
-        
+
         function updateTime() {
           $scope.seconds++;
           if ($scope.seconds === 60) {
@@ -161,7 +161,7 @@ angular.module('stopwatch', []).
       if (places) {
         var placesLength = parseInt(places, 10);
         var inputLength = input.toString().length;
-      
+
         for (var i = 0; i < (placesLength - inputLength); i++) {
           out = '0' + out;
         }
@@ -169,5 +169,5 @@ angular.module('stopwatch', []).
       }
       return out;
     };
-  });  
+  });
 */

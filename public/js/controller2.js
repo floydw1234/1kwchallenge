@@ -1,6 +1,6 @@
 var app = angular.module('myApp',[]);
 
-app.controller('mainController', ['$scope','$http','$interval', function($scope, $http, $interval){
+app.controller('mainController', ['$scope','$http','$interval','$timeout', function($scope, $http, $interval, $timeout){
 
 	$scope.challengeNumber = 0;
 	$scope.test2 = [];
@@ -13,7 +13,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
   $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
   $scope.startTime = 0;
   $scope.endTime = 1;
-  
+
 
 	$scope.addToList = function(){
 			var index = $scope.teams.indexOf($scope.teamName);
@@ -70,17 +70,18 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
     				});
       }else{
       $scope.error = "please pick team to update"}
-  
+
   }
- 
+
   $scope.refreshLeaderBoard = function(){
         $http.get('/getLeaderboard')
 				.success(function (data) {
           console.log(data);
           if(data.length != 0 && data[0].challengeNumber == $scope.challengeNumber){
 					$scope.leaderBoard = data;
-          }
-          $scope.challengeNumber =  data[0].challengeNumber;
+				}else if(data.length != 0){
+					$scope.challengeNumber =  data[0].challengeNumber;
+				}
 				})
 					.error(function(data,status,headers,config){
 					$scope.ResponseDetails = JSON.stringify({data: data});
@@ -90,15 +91,52 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 $interval(function(){
       $scope.refreshLeaderBoard();
   },50,5);
-  
+
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
 }
   $scope.logScore = function(){
-  
-  
+
+
   }
-  
+
+	var timeoutId;
+	$scope.seconds = 0;
+	$scope.minutes = 0;
+	$scope.running = false;
+
+	$scope.stop = function() {
+		$timeout.cancel(timeoutId);
+		$scope.running = false;
+	};
+
+	$scope.start = function() {
+		timer();
+		$scope.running = true;
+	};
+
+	$scope.clear = function() {
+		$scope.seconds = 0;
+		$scope.minutes = 0;
+	};
+
+	function timer() {
+		timeoutId = $timeout(function() {
+			console.log($scope.seconds);
+			updateTime(); // update Model
+			timer();
+		}, 1000);
+	}
+
+	function updateTime() {
+		$scope.seconds++;
+		if ($scope.seconds === 60) {
+			$scope.seconds = 0;
+			$scope.minutes++;
+		}
+	}
+
+
 
 }]);
 
@@ -164,4 +202,3 @@ $interval(function(){
 			$scope.currentId = id;
 		}
 		*/
-
