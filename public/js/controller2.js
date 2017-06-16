@@ -13,7 +13,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
   $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
   $scope.startTime = 0;
   $scope.endTime = 1;
-  
+
 
 	$scope.addToList = function(){
 			var index = $scope.teams.indexOf($scope.teamName);
@@ -53,8 +53,8 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 				});
 	}
   $scope.updateLeaderboard = function(){
-      $scope.currentTeam.score += $scope.endTime;
-      $scope.endTime += $scope.endTime;
+      //$scope.currentTeam.score += $scope.endTime; for testing ordering
+      //$scope.endTime += $scope.endTime;
       $scope.leaderBoard.sort(function(a, b) {
             return parseFloat(a.score) - parseFloat(b.score);
       });
@@ -70,9 +70,9 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
     				});
       }else{
       $scope.error = "please pick team to update"}
-  
+
   }
- 
+
   $scope.refreshLeaderBoard = function(){
         $http.get('/getLeaderboard')
 				.success(function (data) {
@@ -90,15 +90,15 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 $interval(function(){
       $scope.refreshLeaderBoard();
   },50,5);
-  
+
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
 }
   $scope.logScore = function(){
-  
-  
+
+
   }
-  
+
 
 }]);
 
@@ -164,4 +164,3 @@ $interval(function(){
 			$scope.currentId = id;
 		}
 		*/
-

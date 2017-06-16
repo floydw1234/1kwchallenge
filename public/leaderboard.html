@@ -22,13 +22,13 @@
 
    <body ng-app="myApp" class="container" background="/images/solar.jpg">
       <div  ng-controller="mainController">
-          
+
          <h2>1kw Hour Challenge</h2>
          <h3>LeaderBoards!</h3>
          <hr>
 
-         
-         
+
+
          <table class="table table-striped">
   <thead>
     <tr>
@@ -47,13 +47,13 @@
     </tr>
   </tbody>
 </table>
-         
+
          <ol>
             <li ng-repeat="team in teams">{{ team }}</li>
          </ol>
 
 
-      
+
       <center>
       <h2 style="color: white"><b>{{ currentTeam.teamName }}</b></h2>
       <h2 style="color: white"><b>{{ PostDataResponse }}</b></h2>
@@ -65,14 +65,14 @@
             <ul class="dropdown-menu">
                <li><a ng-repeat="challenge in challenges" ng-click="selectChallenge(challenge)">{{ challenge }}</a></li>
             </ul>
-            
-            
-            <!-- 
-            
-            
+
+
+            <!--
+
+
             graph and timer go here as well as a submit button for finalizing your score and updating the leaderboard
-            
-            
+
+
             -->
             <div>
                 <button class="btn" ng-click="updateLeaderboard()">update Leaderboard</button>
