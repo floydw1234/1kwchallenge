@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
-   <head>
+   <head lang="en">
+     <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -11,16 +12,162 @@
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
       <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
-      <!-- Include Date Range Picker -->
+  <script src="http://d3js.org/d3.v2.js"></script>
+  <style>
+  * {margin: 0; padding: 0;}
+
+   .container {
+    padding: 10px;
+    text-align: center;
+  }
+
+  .timer {
+    padding: 10px;
+    background: linear-gradient(top, #222, #444);
+    overflow: hidden;
+    display: inline-block;
+    border: 7px solid #efefef;
+    border-radius: 5px;
+    position: relative;
+
+    box-shadow:
+      inset 0 -2px 10px 1px rgba(0, 0, 0, 0.75),
+      0 5px 20px -10px rgba(0, 0, 0, 1);
+  }
+
+  .cell {
+    /*Should only display 1 digit. Hence height = line height of .numbers
+    and width = width of .numbers*/
+    width: 0.60em;
+    height: 40px;
+    font-size: 50px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+  }
+
+  .numbers {
+    width: 0.6em;
+    line-height: 40px;
+    font-family: digital, arial, verdana;
+    text-align: center;
+    color: #fff;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    /*Glow to the text*/
+    text-shadow: 0 0 5px rgba(255, 255, 255, 1);
+  }
+
+  /*Styles for the controls*/
+  #timer_controls {
+    margin-top: -5px;
+  }
+  #timer_controls label {
+    cursor: pointer;
+    padding: 5px 10px;
+    background: #efefef;
+    font-family: arial, verdana, tahoma;
+    font-size: 11px;
+    border-radius: 0 0 3px 3px;
+  }
+  input[name="controls"] {display: none;}
+
+  /*Control code*/
+  #stop:checked~.timer .numbers {animation-play-state: paused;}
+  #start:checked~.timer .numbers {animation-play-state: running;}
+  #reset:checked~.timer .numbers {animation: none;}
+
+  .moveten {
+    /*The digits move but dont look good. We will use steps now
+    10 digits = 10 steps. You can now see the digits swapping instead of
+    moving pixel-by-pixel*/
+    animation: moveten 1s steps(10, end) infinite;
+    /*By default animation should be paused*/
+    animation-play-state: paused;
+  }
+  .movesix {
+    animation: movesix 1s steps(6, end) infinite;
+    animation-play-state: paused;
+  }
+
+  /*Now we need to sync the animation speed with time speed*/
+  /*One second per digit. 10 digits. Hence 10s*/
+  .second {animation-duration: 10s;}
+  .tensecond {animation-duration: 60s;} /*60 times .second*/
+
+  .milisecond {animation-duration: 1s;} /*1/10th of .second*/
+  .tenmilisecond {animation-duration: 0.1s;}
+  .hundredmilisecond {animation-duration: 0.01s;}
+
+  .minute {animation-duration: 600s;} /*60 times .second*/
+  .tenminute {animation-duration: 3600s;} /*60 times .minute*/
+
+  .hour {animation-duration: 36000s;} /*60 times .minute*/
+  .tenhour {animation-duration: 360000s;} /*10 times .hour*/
+
+  @keyframes moveten {
+    0% {top: 0;}
+    100% {top: -400px;}
+    /*height = 40. digits = 10. hence -400 to move it completely to the top*/
+  }
+
+  @keyframes movesix {
+    0% {top: 0;}
+    100% {top: -240px;}
+    /*height = 40. digits = 6. hence -240 to move it completely to the top*/
+  }
+
+  path {
+          stroke: steelblue;
+          stroke-width: 1;
+          fill: none;
+        }
+
+        .axis {
+          shape-rendering: crispEdges;
+        }
+
+        .x.axis line {
+          stroke: lightgrey;
+        }
+
+        .x.axis .minor {
+          stroke-opacity: .5;
+        }
+
+        .x.axis path {
+          display: none;
+        }
+
+        .y.axis line, .y.axis path {
+          fill: none;
+          stroke: #000;
+        }
+
+        .aGraph {
+          background: #ffffff
+        }
+        #div1 {
+            display: inline-block;
+        }
+
+        #div2 {
+            display: inline-block;
+        }
+  </style>
+
 
       <title> 1Kw Challenge! </title>
    </head>
 	<style>
 
 	</style>
-   <script type="text/javascript"src="js/controller2.js"></script>
+   <script type="text/javascript" src="js/controller2.js"></script>
 
-   <body ng-app="myApp" class="container" background="/images/solar.jpg">
+   <body ng-app="myApp" class="container" background="/images/green.jpg">
       <div  ng-controller="mainController">
 
          <h2>1kw Hour Challenge</h2>
@@ -33,53 +180,179 @@
   <thead>
     <tr>
       <th>#</th>
-      <th>Team Name</th>
-      <th>Challenges Completed</th>
-      <th>Energy Used</th>
+      <th>          Team Name</th>
+      <th>          Challenges Completed</th>
+      <th>          Energy Used(KWH)</th>
     </tr>
   </thead>
   <tbody ng-repeat="team in leaderBoard | orderBy : '-score'">
     <tr>
       <th scope="row"> {{ $index + 1 }}</th>
-      <td ><a ng-click="generateGraph(team)"> {{ team.teamName }}</a></td>
+      <td ><a ng-click="generateGraph(team)">{{ team.teamName }}</a></td>
       <td>{{ team.challenges_completed }}</td>
       <td>{{ team.energy_used }}</td>
     </tr>
   </tbody>
 </table>
 
-         <ol>
-            <li ng-repeat="team in teams">{{ team }}</li>
-         </ol>
+<p>{{ currentPower }}</p>
 
 
+  
+      <h2 style="color: white"><b> Team Selected: {{ currentTeam.teamName }}</b></h2>
 
-      <center>
-      <h2 style="color: white"><b>{{ currentTeam.teamName }}</b></h2>
-      <h2 style="color: white"><b>{{ PostDataResponse }}</b></h2>
-      <h2 style="color: white"><b>{{ leaderBoard }}</b></h2>
-      </center>
-       <div class="dropdown">
-            <button class="button dropdown-toggle" type="button" data-toggle="dropdown"> Challenge Select: {{ currentChallenge }}
+       <div class="dropdown" id="div1">
+            <button class="button dropdown-toggle" type="btn" data-toggle="dropdown"> Challenge Select: {{ currentChallenge }}
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
                <li><a ng-repeat="challenge in challenges" ng-click="selectChallenge(challenge)">{{ challenge }}</a></li>
             </ul>
+        </div>
+        <hr>
+  
+         <!--   <script src="js/timer.js"></script> -->
+              <div id="div1">
+              <div class="container" >
+                <!-- time to add the controls -->
+
+                <input id="start" name="controls" type="radio" />
+                <input id="stop" name="controls" type="radio" />
+                <input id="reset" name="controls" type="radio" />
+                <div class="timer">
+                  <div class="cell">
+                    <div class="numbers tenhour moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell">
+                    <div class="numbers hour moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell divider"><div class="numbers">:</div></div>
+                  <div class="cell">
+                    <div class="numbers tenminute movesix">0 1 2 3 4 5 6</div>
+                  </div>
+                  <div class="cell">
+                    <div class="numbers minute moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell divider"><div class="numbers">:</div></div>
+                  <div class="cell">
+                    <div class="numbers tensecond movesix">0 1 2 3 4 5 6</div>
+                  </div>
+                  <div class="cell">
+                    <div class="numbers second moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell divider"><div class="numbers">:</div></div>
+                  <div class="cell">
+                    <div class="numbers milisecond moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell">
+                    <div class="numbers tenmilisecond moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                  <div class="cell">
+                    <div class="numbers hundredmilisecond moveten">0 1 2 3 4 5 6 7 8 9</div>
+                  </div>
+                </div>
+                <!-- Lables for the controls -->
+                <div id="timer_controls">
+                  <label for="start" ng-click="start()" ng-disabled="running">Start</label>
+                  <label for="stop" ng-click="stop()" ng-disabled="!running">Stop</label>
+                  <label for="reset"  ng-click="clear()" ng-disabled="running"><a href="/leaderboard.html">Reset </a></label>
+                </div>
+                </div>
+                </div>
+                 <div>
+                 
+                  <button id="div1" style="margin-bottom:2cm;" class="btn" ng-click="updateLeaderboard()">Submit Score!</button>
+                 
+              </div>
+              <h2 style="color: white">{{ error }}</h2>
+
+              <div id="graph" class="aGraph" style="float:middle;"></div>
 
 
-            <!--
+              <script>
+                /* implementation heavily influenced by http://bl.ocks.org/1166403 */
+
+                // define dimensions of graph
+                var m = [80, 80, 80, 80]; // margins
+                var w = 1000 - m[1] - m[3]; // width
+                var h = 400 - m[0] - m[2]; // height
+
+                // create a simple data array that we'll plot with a line (this array represents only the Y values, X will just be the index location)
+                var data = [0];
+
+                // X scale will fit all values from data[] within pixels 0-w
+                var x = d3.scale.linear().domain([0, 100]).range([0, w]);
+                // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
+                var y = d3.scale.linear().domain([0, 1000]).range([h, 0]);
+                  // automatically determining max range can work something like this
+                  // var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
+
+                // create a line function that can convert data[] into x and y points
+                var line = d3.svg.line()
+                  // assign the X function to plot our line as we wish
+                  .x(function(d,i) {
+                    // verbose logging to show what's actually being done
+                    console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
+                    // return the X coordinate where we want to plot this datapoint
+                    return x(i);
+                  })
+                  .y(function(d) {
+                    // verbose logging to show what's actually being done
+                    console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
+                    // return the Y coordinate where we want to plot this datapoint
+                    return y(d);
+                  })
+
+                  // Add an SVG element with the desired dimensions and margin.
+                  var graph = d3.select("#graph").append("svg:svg")
+                        .attr("width", w + m[1] + m[3])
+                        .attr("height", h + m[0] + m[2])
+                      .append("svg:g")
+                        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+                  // create yAxis
+                  var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+                  // Add the x-axis.
+                  graph.append("svg:g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + h + ")")
+                        .call(xAxis);
 
 
-            graph and timer go here as well as a submit button for finalizing your score and updating the leaderboard
+                  // create left yAxis
+                  var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+                  // Add the y-axis to the left
+                  graph.append("svg:g")
+                        .attr("class", "y axis")
+                        .attr("transform", "translate(-25,0)")
+                        .call(yAxisLeft);
+
+                    // Add the line by appending an svg:path element with the data line we created above
+                  // do this AFTER the axes above so that the line is above the tick-lines
+                    graph.append("svg:path").attr("d", line(data));
+
+              var totalenergy = 0;
+              setInterval(function() {
+                var running = $('[ng-controller="mainController"]').scope().running;
+                if (running){
+                  var second = $('[ng-controller="mainController"]').scope().seconds;
+
+                  totalenergy += Math.random() * 10;
+                  data.push(totalenergy);
+
+                  // create left yAxis
+
+                  graph.append("svg:path").attr("d", line(data));
+                }
+              }, 1000);
+              </script>
+
+             
+              </body>
 
 
-            -->
-            <div>
-                <button class="btn" ng-click="updateLeaderboard()">update Leaderboard</button>
-            </div>
          </div>
       </div>
-   </body>
+
 </html>
 
 <!--

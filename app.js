@@ -109,23 +109,24 @@ app.get("/getLeaderboard", function(req,res){
      });
 });
 
-app.get("/mostRecentValue/:challenge",function(req,res){
-    var challenge = req.params.challenge;
+app.post("/mostRecentValue",function(req,res){
+    var challenge = req.body.challenge;
     var sensor = "";
     /*
     movie Station sensorId: 23231
     game station #2 - sensorId: 52415
     game station #1 - sensorId: 11229
     blower - sensorId: 29574
+    ["Air Pong","River Rapids","Obstacle course"];
     */
     switch(challenge) {
-    case "riverRush":
+    case "River Rapids":
         sensor = 11229;
         break;
-    case "obstacleCourse":
+    case "Obstacle course":
         sensor = 52415;  
         break;
-    case "blower":
+    case "Air Pong":
         sensor = 29574;
         break;
     case "movieStation":
@@ -135,7 +136,6 @@ app.get("/mostRecentValue/:challenge",function(req,res){
         console.log("Please use a valid http request from the front end");
         res.send("Incorect challenge specified");
         return;
-        sensor = "23231";
     }
     var model = mongoose.model('data', data, 'ids');
     model.findOne({'sensorId': sensor},{}, { sort: { 'timePolled' : -1 } }, function(err, post) {

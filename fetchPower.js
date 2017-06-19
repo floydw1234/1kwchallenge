@@ -90,9 +90,9 @@ setInterval(function(){
 					//console.log(jsonParsed.devices[i].id + "\n ---------------------------------");
                                         InstPowerArray = String(InstPower).split(" ");
 					//console.log(InstPowerArray);
-                                        deviceIdListMongoose[i] = new id({
+                                        deviceIdListMongoose[i] = new id({ 
                                             sensorId: jsonParsed.devices[i].id,
-                                            value: Multiplier / Divisor * parseFloat(InstPowerArray[0]),
+                                            value: (Multiplier / Divisor * parseFloat(InstPowerArray[0])) * 100,
                                             timePolled: parseInt(Math.floor(Date.now() / 1000)),
                                             last_seen: jsonParsed.devices[i].last_seen
                                         });

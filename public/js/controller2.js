@@ -1,6 +1,6 @@
 var app = angular.module('myApp',[]);
 
-app.controller('mainController', ['$scope','$http','$interval', function($scope, $http, $interval){
+app.controller('mainController', ['$scope','$http','$interval','$timeout', function($scope, $http, $interval, $timeout){
 
 	$scope.challengeNumber = 0;
 	$scope.test2 = [];
@@ -13,6 +13,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
   $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
   $scope.startTime = 0;
   $scope.endTime = 1;
+  $scope.currentPower = {};
 
 
 	$scope.addToList = function(){
@@ -52,13 +53,26 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
 	}
+  $scope.mostRecentValue = function(){
+      var data = {challenge: $scope.currentChallenge};
+      $http.post('/mostRecentValue', data)
+				.success(function (data, status, headers, config) {
+								
+					$scope.currentPower = data;
+				})
+					.error(function(data,status,headers,config){
+					$scope.ResponseDetails = JSON.stringify({data: data});
+				});
+  }
   $scope.updateLeaderboard = function(){
-      //$scope.currentTeam.score += $scope.endTime; for testing ordering
-      //$scope.endTime += $scope.endTime;
+      
+      if($scope.currentTeam != ""){
+          $scope.currentTeam.energy_used += (($scope.seconds + $scope.minutes * 60)/3600) * ($scope.currentPower.value * 100);
+      $scope.currentTeam.score = $scope.currentTeam.challenges_completed / $scope.currentTeam.energy_used;
+      $scope.currentTeam.challenges_completed += 1;
       $scope.leaderBoard.sort(function(a, b) {
             return parseFloat(a.score) - parseFloat(b.score);
       });
-      if($scope.currentTeam != ""){
           $scope.error = "";
           var data = $scope.currentTeam;
     				$http.post('/updateLeaderboard', data)
@@ -69,7 +83,7 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
     					$scope.ResponseDetails = JSON.stringify({data: data});
     				});
       }else{
-      $scope.error = "please pick team to update"}
+      $scope.error = "Please pick select team from the leaderboard! You can do this by clicking on the team name."}
 
   }
 
@@ -79,8 +93,9 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
           console.log(data);
           if(data.length != 0 && data[0].challengeNumber == $scope.challengeNumber){
 					$scope.leaderBoard = data;
-          }
-          $scope.challengeNumber =  data[0].challengeNumber;
+				}else if(data.length != 0){
+					$scope.challengeNumber =  data[0].challengeNumber;
+				}
 				})
 					.error(function(data,status,headers,config){
 					$scope.ResponseDetails = JSON.stringify({data: data});
@@ -90,7 +105,12 @@ app.controller('mainController', ['$scope','$http','$interval', function($scope,
 $interval(function(){
       $scope.refreshLeaderBoard();
   },50,5);
-
+$scope.mostRecentValue();
+$interval(function(){
+      $scope.mostRecentValue();
+  },1000);
+  
+  
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
 }
@@ -99,9 +119,43 @@ $interval(function(){
 
   }
 
+	var timeoutId;
+	$scope.seconds = 0;
+	$scope.minutes = 0;
+	$scope.running = false;
+
+	$scope.stop = function() {
+		$timeout.cancel(timeoutId);
+		$scope.running = false;
+	};
+
+	$scope.start = function() {
+		timer();
+		$scope.running = true;
+	};
+
+	$scope.clear = function() {
+		$scope.seconds = 0;
+		$scope.minutes = 0;
+	};
+
+	function timer() {
+		timeoutId = $timeout(function() {
+			//console.log($scope.seconds);
+			updateTime(); // update Model
+			timer();
+		}, 1000);
+	}
+
+	function updateTime() {
+		$scope.seconds++;
+		if ($scope.seconds === 60) {
+			$scope.seconds = 0;
+			$scope.minutes++;
+		}
+	}
 
 }]);
-
 
 /*
 	$scope.prepareData = function(type){
