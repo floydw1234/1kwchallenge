@@ -68,10 +68,10 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
       
       if($scope.currentTeam != ""){
           $scope.currentTeam.energy_used += (($scope.seconds + $scope.minutes * 60)/3600) * ($scope.currentPower.value * 100);
-      $scope.currentTeam.score = $scope.currentTeam.challenges_completed / $scope.currentTeam.energy_used;
+      $scope.currentTeam.score =  $scope.currentTeam.energy_used /$scope.currentTeam.challenges_completed
       $scope.currentTeam.challenges_completed += 1;
       $scope.leaderBoard.sort(function(a, b) {
-            return parseFloat(a.score) - parseFloat(b.score);
+            return parseFloat(a.energy_used) - parseFloat(b.energy_used);
       });
           $scope.error = "";
           var data = $scope.currentTeam;
