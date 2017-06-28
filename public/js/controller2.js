@@ -10,10 +10,13 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
   $scope.leaderBoard = "";
   $scope.currentTeam = "";
   $scope.currentChallenge = "Air Pong";
-  $scope.challenges = ["Air Pong","River Rapids","Obstacle course"];
+  $scope.challenges = ["Air Pong","River Rapids","Obstacle course","Hand Generate","Bike Generate","Pedal Generate"];
   $scope.startTime = 0;
   $scope.endTime = 1;
   $scope.currentPower = {};
+  $scope.currentVerve = {};
+  $scope.totalVerve = 0;
+  $scope.smartenit = true;
 
 
 	$scope.addToList = function(){
@@ -41,7 +44,8 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
 				var index = $scope.teams.indexOf(team);
 				$scope.teams.splice(index, 1);
 	}
-	$scope.postTeams = function(){
+ /*
+	$scope.postTeams = function(){ //this 
 				var deferred = $q.defer();
 				var data = {teams: $scope.teams};
 				$http.post('/postTeams', data)
@@ -53,35 +57,73 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
 	}
-  $scope.mostRecentValue = function(){
-      var data = {challenge: $scope.currentChallenge};
-      $http.post('/mostRecentValue', data)
-				.success(function (data, status, headers, config) {
-								
-					$scope.currentPower = data;
+ */
+  $scope.mostRecentValue = function(){             // this gets the most recent power data from a specified sensor
+      if($scope.smartenit == true){ //only if it is not using verve
+          var data = {challenge: $scope.currentChallenge};
+          $http.post('/mostRecentValue', data)
+    				.success(function (data, status, headers, config) {
+    								
+    					$scope.currentPower = data;
+    				})
+    					.error(function(data,status,headers,config){
+    					$scope.ResponseDetails = JSON.stringify({data: data});
+    				});
+        }
+  }
+  $scope.mostRecentVerve = function(){
+      $http.get('/getVerve')
+				.success(function (data) {
+								//"Hand Generate" == sensor1,"Bike Generate" == sensor2,"Pedal Generate" = sensor3
+					switch($scope.currentChallenge){
+              case "Hand Generate":
+                    if(data.sensor1 < 0) $scope.currentVerve = 0;
+                    else $scope.currentVerve = data.sensor1;
+                    break;
+              case "Bike Generate":
+                    if(data.sensor2 < 0) $scope.currentVerve = 0;
+                    else $scope.currentVerve = data.sensor2;
+                    break;
+              case "Pedal Generate":
+                    if(data.sensor3 < 0) $scope.currentVerve = 0;
+                    else $scope.currentVerve = data.sensor3;
+                    break;
+              default:
+                    $scope.currentVerve = data.timeStamp;
+          }
 				})
 					.error(function(data,status,headers,config){
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
   }
-  $scope.updateLeaderboard = function(){
-      
+  $scope.updateLeaderboard = function(){ // this function updates the leaderboard with new values
       if($scope.currentTeam != ""){
-          $scope.currentTeam.energy_used += (($scope.seconds + $scope.minutes * 60)/3600) * ($scope.currentPower.value * 100);
-      $scope.currentTeam.score =  $scope.currentTeam.energy_used /$scope.currentTeam.challenges_completed
-      $scope.currentTeam.challenges_completed += 1;
-      $scope.leaderBoard.sort(function(a, b) {
-            return parseFloat(a.energy_used) - parseFloat(b.energy_used);
-      });
-          $scope.error = "";
-          var data = $scope.currentTeam;
-    				$http.post('/updateLeaderboard', data)
-    				.success(function (data, status, headers, config) {
-    					$scope.PostDataResponse = data;
-    				})
-    					.error(function(data,status,headers,config){
-    					$scope.ResponseDetails = JSON.stringify({data: data});
-    				});
+          if($scope.smartenit == true){
+              $scope.currentTeam.energy_used += (($scope.seconds + $scope.minutes * 60)/3600) * ($scope.currentPower.value * 100) * 1000; //adds watt hours to total energy used
+              $scope.currentTeam.total_energy += (($scope.seconds + $scope.minutes * 60)/3600) * ($scope.currentPower.value * 100) * 1000;
+              $scope.currentTeam.challenges_completed += 1;
+              $scope.leaderBoard.sort(function(a, b) {
+                    return parseFloat(a.energy_used) - parseFloat(b.energy_used);
+              });
+              }else{
+              $scope.currentTeam.energy_generated += ($scope.totalVerve/3600);//avg power generated * hours ellapsed
+              $scope.currentTeam.total_energy -= ($scope.totalVerve/3600); //avg power generated * hours ellapsed
+              $scope.leaderBoard.sort(function(a, b) { //this function sorts the leaderboard by total energy
+                    return parseFloat(a.total_energy) - parseFloat(b.total_energy);
+              });
+          
+          }
+              $scope.error = "";
+              var data = $scope.currentTeam;
+        				$http.post('/updateLeaderboard', data)
+        				.success(function (data, status, headers, config) {
+        					$scope.PostDataResponse = data;
+                  $scope.totalVerve = 0;
+                  $scope.error = "~Now press the reset button to Make another entry!~"
+        				})
+        					.error(function(data,status,headers,config){
+        					$scope.ResponseDetails = JSON.stringify({data: data});
+        				});
       }else{
       $scope.error = "Please pick select team from the leaderboard! You can do this by clicking on the team name."}
 
@@ -101,22 +143,41 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
 					$scope.ResponseDetails = JSON.stringify({data: data});
 				});
   }
+  
+  // this ruuns when the page is loaded to load the current leaderboad. fetches the leaderboard 5 times
   $scope.refreshLeaderBoard();
 $interval(function(){
       $scope.refreshLeaderBoard();
   },50,5);
+$interval(function(){
+      $scope.refreshLeaderBoard();
+  },1000);
+  
+  // these two statements below refresh the values of power usage and verve data to a scope variable to lower latency in the functions
 $scope.mostRecentValue();
 $interval(function(){
       $scope.mostRecentValue();
   },1000);
+$scope.mostRecentVerve();
+$interval(function(){
+    $scope.mostRecentVerve();
+},1000);
   
   
   $scope.selectChallenge = function(challenge){
     $scope.currentChallenge = challenge;
+    if(challenge != "Hand Generate" && challenge != "Bike Generate" && challenge != "Pedal Generate"){
+        $scope.smartenit = true;
+    }else{
+        $scope.smartenit = false;
+    }
 }
   $scope.logScore = function(){
 
 
+  }
+  while($scope.running == 'true'){
+      console.log("asdf");
   }
 
 	var timeoutId;
@@ -126,12 +187,24 @@ $interval(function(){
 
 	$scope.stop = function() {
 		$timeout.cancel(timeoutId);
+    $scope.refreshLeaderBoard();
 		$scope.running = false;
 	};
 
 	$scope.start = function() {
 		timer();
 		$scope.running = true;
+    var promise;
+    $interval(function(){
+      if($scope.running == false){
+          $interval.cancel(promise);
+          return;
+      }else{
+          $scope.totalVerve += $scope.currentVerve;
+          console.log($scope.totalVerve);
+          console.log("asdf");
+      }
+  },1000);
 	};
 
 	$scope.clear = function() {

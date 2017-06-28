@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+   <head lang="en">
+     <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="refresh" content="10"> 
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+      <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+<title> 1kW Challenge! </title>
+
+
+<style >
+
+/* CSS codes for customized fonts  */
+
+@font-face{
+	font-family: crayon;
+	src: url(/media/crayon.ttf); } 
+
+@font-face{	
+	font-family: demo;
+	src: url(/media/demo.otf);}
+
+font1{
+	font-family: crayon;
+	color:#FFFFFF;
+	font-size:40pt; }
+
+font2{
+	font-family: demo;
+	color:#000000;
+	font-size: 24pt; }
+</style>
+
+   </head>
+   <script type="text/javascript" src="js/controller2.js"></script>
+
+   <body ng-app="myApp" class="container" background="/images/BG.jpg">
+      <div  ng-controller="mainController">
+
+        <center><h1><b><font1>1 Kilowatt Hour (KWh) Challenge</font1></b></h1></center>
+        <center><h2><b><font1>Leaderboard</font1></b></h2></center>
+         <hr>
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>         <font color="white" size="3"> Team Name</font></th>
+      <th>         <font color="white" size="3"> Challenges Completed</font></th>
+      <th>         <font color="white" size="3"> Energy Used(Wh)</font></th>
+      <th>         <font color="white" size="3"> Energy Generated(Wh)</font></th>
+      <th>         <font color="white" size="3"> Total Energy(Wh)</font></th>
+    </tr>
+  </thead>
+  <tbody ng-repeat="team in leaderBoard | orderBy : '-score'">
+    <tr>
+      <th scope="row"> {{ $index + 1 }}</th>
+      <td ><a ng-click="generateGraph(team)">{{ team.teamName }}</a></td>
+      <td>{{ team.challenges_completed }}</td>
+      <td> <span>{{ team.energy_used | number:6}}</span> </td>
+      <td> <span>{{ team.energy_generated | number:6}}</span> </td>
+      <td> <span>{{ team.total_energy | number:6}}</span> </td>
+    </tr>
+  </tbody>
+</table>

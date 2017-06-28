@@ -24,8 +24,18 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
- 
 
+var verve = new Schema({
+    sensor1: Number,
+    sensor2: Number,
+    sensor3: Number,
+    sensor4: Number,
+    sensor5: Number,
+    sensor6: Number,
+    sensor7: Number,
+    sensor8: Number,
+    timestamp: Number
+});
 
 var team = new Schema({
     teamName: String,
@@ -33,7 +43,8 @@ var team = new Schema({
     energy_used: Number,
     challengeNumber: Number,
     updated_at : Number,
-    score: Number
+    energy_generated: Number,
+    total_energy: Number
 });
 
 var data = new Schema({
@@ -42,10 +53,6 @@ var data = new Schema({
     timePolled : Number, 
     last_seen : Number 
 });
-    
-
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,7 +66,17 @@ app.get("/", function(req,res){
 	res.sendfile('public/index.html');
 });
 
-app.post("/postTeams", upload.array(), function(req,res){
+app.post("/postVerve",function(req,res){// recieves data from verve and stores it into mongo
+    //console.log(req.body);
+    var Verve = mongoose.model('vSensors', verve);
+    var verveEntry = new Verve(req.body);
+    verveEntry.save(function(err) {
+      if (err) res.status(500).send('{"error": "something went wrong"}');
+      else res.status(201).send(JSON.stringify(req.body));
+    });
+});
+
+app.post("/postTeams", upload.array(), function(req,res){ // initializes teams from the  first start page
 	var teamsArray = req.body.teams;
   var challengeNumber = 0;
 	var model = mongoose.model('team', team, 'teams');
@@ -76,7 +93,8 @@ app.post("/postTeams", upload.array(), function(req,res){
           energy_used: 0,
           challengeNumber: challengeNumber,
           updated_at: parseInt(Math.floor(Date.now() / 1000)) ,
-          score: 0
+          energy_generated: 0,
+          total_energy: 0
           }
        );
        doc.save(function(err) {
@@ -89,7 +107,18 @@ app.post("/postTeams", upload.array(), function(req,res){
 	
 });
 
-app.get("/getLeaderboard", function(req,res){
+app.get("/getVerve",function(req,res){           //gets the most recent value from the verve dataset
+         var model = mongoose.model('vSensors', verve);
+         model.findOne({},{}, { sort: { 'timestamp' : -1 } }, function(err, post) {
+              //console.log(post);
+              if(err) res.status(500).send(err);
+              if(post != null){
+                res.status(200).send(post);
+              }else res.status(200).send("no data available");
+         });
+});
+
+app.get("/getLeaderboard", function(req,res){//gets an updated list of the most recent teams from the database
       var challengeNumber=0;
       var array = [];
       var model = mongoose.model('teams', team, 'teams');
@@ -100,9 +129,11 @@ app.get("/getLeaderboard", function(req,res){
     }).then(function(){
       model.find({'challengeNumber' : challengeNumber },{},{sort:{ 'score': -1 }}, function(err, values) {
         values.forEach(function(thing){
+        console.log(thing);
 				array.push(thing);
         });
       }).then(function(){
+        
         
          res.send(array);
     });
@@ -133,7 +164,7 @@ app.post("/mostRecentValue",function(req,res){
         sensor = 23231;
         break;
     default:
-        console.log("Please use a valid http request from the front end");
+        //console.log("Please use a valid http request from the front end");
         res.send("Incorect challenge specified");
         return;
     }
@@ -153,6 +184,8 @@ app.post("/updateLeaderboard",function(req,res){
             result.challenges_completed = req.body.challenges_completed;
             result.energy_used = req.body.energy_used;
             result.score = req.body.score;
+            result.total_energy = req.body.total_energy;
+            result.energy_generated = req.body.energy_generated;
             result.updated_at = parseInt(Math.floor(Date.now() / 1000));
             result.save(function (err, update) {
                 if (err) return handleError(err);
@@ -161,10 +194,6 @@ app.post("/updateLeaderboard",function(req,res){
         });
 
 });
-
-
-
-
  
 module.exports = app;
 app.listen(8080, function () {

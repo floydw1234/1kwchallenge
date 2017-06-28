@@ -14,20 +14,42 @@
 
       <!-- Include Date Range Picker -->
      
-      <title> 1Kw Challenge </title>
+      <title> 1 KiloWatt-Hour (1KWh) Challenge </title>
    </head>
 	<style>
- li{
-   font-size: 200%;
- }
+li{
+   font-size: 200%;}
+
+red{
+	color: red;}
+
+@font-face{
+	font-family: crayon;
+	src: url(/media/crayon.ttf); } 
+
+@font-face{	
+	font-family: demo;
+	src: url(/media/demo.otf);}
+
+font1{
+	font-family: crayon;
+	color:#000000;
+	font-size:40pt; }
+
+font2{
+	font-family: demo;
+	color:#000000;
+	font-size: 24pt; }
 
 	</style>
+
    <script type="text/javascript"src="js/controller.js"></script>
+
    <body ng-app="myApp" class="container">
       <div  ng-controller="mainController">
 
-         <h2>1kw Hour Challenge</h2>
-         <p>Enter you team names one at a time!</p>
+        <font1><center> 1 KiloWatt-Hour (1 KWh) Challenge </center></font1>
+	<p>Enter you team names one at a time (for populating team names in a new game): </p>
  
 	<div>
          <input type="text" name="teamName" ng-model="teamName" value="team Name Here"/>
@@ -45,12 +67,16 @@
          </div>
          <hr>
          <form action="/leaderboard.html">
-                <input class="btn" type="submit" value="Finalize Teams and Go to leaderboard!" ng-click="postTeams()" />
+                <input class="btn" type="submit" value="Finalize teams and go to Game Control Interface" ng-click="postTeams()" />
         </form>
-        <hr>
-        
+
+<!-- -->
+<red><p>WARNING: Finalzing the teams when the game is in progress will erase current game data and restart the game!!!</p></red>
+
+<hr>
+
         <form action="/leaderboard.html">
-                <input class="btn" type="submit" value="Go to the previous Leaderboard!"/>
+                <input class="btn" type="submit" value="Go to Game Control Interface for game in progress"/>
         </form>
 
       </div>
