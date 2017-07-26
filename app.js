@@ -58,7 +58,20 @@ var data = new Schema({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.get('/cleardatabase',function(req,res){
+    res.sendfile("public/clearDatabase.html");
+})
 
+app.get('/cleardatabase1234',function(req,res){
+    var model = mongoose.model('team', team, 'teams');
+    var model2 = mongoose.model('vSensors', verve);
+    var model3 = mongoose.model('data', data, 'ids');
+    model.find({}).remove().exec();
+    model2.find({}).remove().exec();
+    model3.find({}).remove().exec();
+    
+    res.send("database cleared!")
+});
 
 
 // error handler

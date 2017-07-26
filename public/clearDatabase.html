@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="background.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+      <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+      <!-- Include Date Range Picker -->
+     
+      <title> 1 KiloWatt-Hour (1KWh) Challenge </title>
+   </head>
+	<style>
+li{
+   font-size: 200%;}
+
+red{
+	color: red;}
+
+@font-face{
+	font-family: crayon;
+	src: url(/media/crayon.ttf); } 
+
+@font-face{	
+	font-family: demo;
+	src: url(/media/demo.otf);}
+
+font1{
+	font-family: crayon;
+	color:#000000;
+	font-size:40pt; }
+
+font2{
+	font-family: demo;
+	color:#000000;
+	font-size: 24pt; }
+
+	</style>
+
+   <script type="text/javascript"src="js/controller.js"></script>
+
+   <body ng-app="myApp" class="container">
+      <div  ng-controller="mainController">
+
+        
+
+
+
+        <form action="/clearDatabase1234">
+                <input class="btn" type="submit" value="Press this to clear the database!"/>
+        </form>
+
+      </div>
+   </body>
+</html>
+
+<!--
+<div class="dropdown">
+   <button class="button dropdown-toggle" type="button" data-toggle="dropdown" ng-click="getIds()"> Sensor Select: {{ currentId }}
+   <span class="caret"></span></button>
+   <ul class="dropdown-menu">
+      <li><a ng-repeat="id in idList" ng-click="selectId(id)">{{ id }}</a></li>
+   </ul>
+</div>
+-->

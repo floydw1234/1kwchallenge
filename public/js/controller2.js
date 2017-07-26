@@ -63,7 +63,6 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
           var data = {challenge: $scope.currentChallenge};
           $http.post('/mostRecentValue', data)
     				.success(function (data, status, headers, config) {
-    								
     					$scope.currentPower = data;
     				})
     					.error(function(data,status,headers,config){
@@ -111,7 +110,6 @@ app.controller('mainController', ['$scope','$http','$interval','$timeout', funct
               $scope.leaderBoard.sort(function(a, b) { //this function sorts the leaderboard by total energy
                     return parseFloat(a.total_energy) - parseFloat(b.total_energy);
               });
-          
           }
               $scope.error = "";
               var data = $scope.currentTeam;
